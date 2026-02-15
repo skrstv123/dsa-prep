@@ -1,6 +1,3 @@
-Here is a clean, formatted **Markdown** block containing the notes and code from our session. You can copy this and save it as a `.md` file or paste it into a notes app like Notion, Obsidian, or a GitHub Gist. 📑
-
-```markdown
 # 🕸️ Graph Theory & BFS/DFS Patterns
 
 Notes on common patterns for technical interviews involving grids, dependencies, and pathfinding.
@@ -152,11 +149,42 @@ class Solution:
 
 ```
 
-```
+# 🕸️ Graph Theory & BFS/DFS Patterns
 
-You've built a solid foundation today! Since we're wrapping up, would you like to:
-1.  **Do a quick check** on how to find "neighbors" for the *Word Ladder* problem (to see if that pattern clicks)?
-2.  **Review the Union-Find logic** for the *Earliest Friends* problem (useful for connectivity)?
-3.  **Confirm the next step** for your study session?
+Notes on common patterns for technical interviews involving grids, dependencies, and pathfinding.
+
+---
+
+## 1. Grid Traversal (Islands Pattern) 🏝️
+**Problem:** *Number of Islands*
+**Pattern:** Treat a 2D matrix as a graph. Each cell $(r, c)$ is a node; its 4 neighbors are edges.
+
+### 🔑 Key Concepts
+* **Visited Set:** Essential to prevent infinite loops. 
+* **Boundary Checks:** Verify $0 \le r < R$ and $0 \le c < C$ before accessing.
+
+### 💻 Solution
+```python
+class Solution:
+    def numIslands(self, grid: List[List[str]]) -> int:
+        rows, cols = len(grid), len(grid[0])
+        visited = set()
+        moves = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+
+        def dfs(r, c):
+            if (r < 0 or r >= rows or c < 0 or c >= cols or 
+                grid[r][c] == '0' or (r, c) in visited):
+                return
+            visited.add((r, c))
+            for dr, dc in moves:
+                dfs(r + dr, c + dc)
+
+        islands = 0
+        for r in range(rows):
+            for c in range(cols):
+                if grid[r][c] == '1' and (r, c) not in visited:
+                    islands += 1
+                    dfs(r, c)
+        return islands
 
 ```
