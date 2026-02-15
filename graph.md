@@ -103,11 +103,38 @@ class Solution:
 * Pop node, add to result.
 * Decrement neighbors' in-degrees.
 * If a neighbor hits 0, add to queue.
-
-
-
-
 * **Cycle Detection:** If `len(result) != total_nodes`, there is a cycle (deadlock).
+
+```python
+from collections import deque, defaultdict
+
+class Solution:
+    def canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
+        adj = defaultdict(list)
+        in_degree = [0] * numCourses
+        for dest, src in prerequisites:
+            adj[src].append(dest)
+            in_degree[dest] += 1
+            
+        queue = deque([i for i in range(numCourses) if in_degree[i] == 0])
+        count = 0
+        while queue:
+            curr = queue.popleft()
+            count += 1
+            for neighbor in adj[curr]:
+                in_degree[neighbor] -= 1
+                if in_degree[neighbor] == 0:
+                    queue.append(neighbor)
+        return count == numCourses
+```
+
+## 4. Advanced Topo Sort (Graph Building) 🛸
+**Problem:** Alien Dictionary
+**Pattern:** Build the graph manually by comparing adjacent sorted words.
+
+### 🔑 Key Concepts
+* First Difference: Only the first differing character between words gives ordering info.
+* Prefix Check: If word1 is longer than word2 and contains it as a prefix, it's invalid.
 
 ### 💻 Solution (Alien Dictionary)
 
@@ -148,43 +175,5 @@ class Solution:
         return "".join(res) if len(res) == len(in_degree) else ""
 
 ```
-
-# 🕸️ Graph Theory & BFS/DFS Patterns
-
-Notes on common patterns for technical interviews involving grids, dependencies, and pathfinding.
-
 ---
 
-## 1. Grid Traversal (Islands Pattern) 🏝️
-**Problem:** *Number of Islands*
-**Pattern:** Treat a 2D matrix as a graph. Each cell $(r, c)$ is a node; its 4 neighbors are edges.
-
-### 🔑 Key Concepts
-* **Visited Set:** Essential to prevent infinite loops. 
-* **Boundary Checks:** Verify $0 \le r < R$ and $0 \le c < C$ before accessing.
-
-### 💻 Solution
-```python
-class Solution:
-    def numIslands(self, grid: List[List[str]]) -> int:
-        rows, cols = len(grid), len(grid[0])
-        visited = set()
-        moves = [(1, 0), (-1, 0), (0, 1), (0, -1)]
-
-        def dfs(r, c):
-            if (r < 0 or r >= rows or c < 0 or c >= cols or 
-                grid[r][c] == '0' or (r, c) in visited):
-                return
-            visited.add((r, c))
-            for dr, dc in moves:
-                dfs(r + dr, c + dc)
-
-        islands = 0
-        for r in range(rows):
-            for c in range(cols):
-                if grid[r][c] == '1' and (r, c) not in visited:
-                    islands += 1
-                    dfs(r, c)
-        return islands
-
-```
